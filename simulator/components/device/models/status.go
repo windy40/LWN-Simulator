@@ -12,9 +12,10 @@ import (
 )
 
 type Status struct {
-	Active bool `json:"active"`
-	Joined bool `json:"-"`
-	Mode   int  `json:"-"`
+	Active    bool `json:"active"`
+	LinkedDev bool `json:"linked"`
+	Joined    bool `json:"-"`
+	Mode      int  `json:"-"`
 
 	DataUplink    up.InfoUplink   `json:"infoUplink"`
 	MType         lorawan.MType   `json:"mtype"`   // from UI
@@ -23,6 +24,8 @@ type Status struct {
 
 	DataDownlink dl.InformationDownlink `json:"-"`
 	FCntDown     uint32                 `json:"fcntDown"`
+	// windy40 dev socket
+	BufferDataDownlinks []dl.InformationDownlink `json:"-"`
 
 	DataRate uint8 `json:"-"`
 	TXPower  uint8 `json:"-"`

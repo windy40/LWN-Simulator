@@ -13,21 +13,21 @@ const (
 	CodeUnjoined
 )
 
-//ADRInfo contains adr bits
+// ADRInfo contains adr bits
 type ADRInfo struct {
 	ADR       bool `json:"-"`
 	ADRACKCnt int8 `json:"-"`
 	ADRACKReq bool `json:"-"`
 }
 
-//Setup struct
+// Setup struct
 func (adr *ADRInfo) Setup(ADRValue bool) {
 	adr.ADR = ADRValue
 	adr.ADRACKCnt = 0
 	adr.ADRACKReq = false
 }
 
-//Reset struct
+// Reset struct
 func (adr *ADRInfo) Reset() string {
 
 	adr.ADRACKCnt = 0

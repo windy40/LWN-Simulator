@@ -15,7 +15,7 @@ type As923 struct {
 	Info models.Parameters
 }
 
-//manca un setup
+// manca un setup
 func (as *As923) Setup() {
 	as.Info.Code = Code_As923
 	as.Info.MinFrequency = 923000000

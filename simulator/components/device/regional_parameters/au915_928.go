@@ -15,7 +15,7 @@ type Au915 struct {
 	Info models.Parameters
 }
 
-//manca un setup
+// manca un setup
 func (au *Au915) Setup() {
 	au.Info.Code = Code_Au915
 	au.Info.MinFrequency = 915000000

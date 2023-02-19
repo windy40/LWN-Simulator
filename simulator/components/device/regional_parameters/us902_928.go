@@ -15,7 +15,7 @@ type Us915 struct {
 	Info models.Parameters
 }
 
-//manca un setup
+// manca un setup
 func (us *Us915) Setup() {
 	us.Info.Code = Code_Us915
 	us.Info.MinFrequency = 902000000

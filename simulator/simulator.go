@@ -18,7 +18,7 @@ import (
 	"github.com/brocaar/lorawan"
 )
 
-//Simulator is a model
+// Simulator is a model
 type Simulator struct {
 	State                 uint8               `json:"-"`
 	Devices               map[int]*dev.Device `json:"-"`

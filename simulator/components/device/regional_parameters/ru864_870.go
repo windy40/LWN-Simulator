@@ -15,7 +15,7 @@ type Ru864 struct {
 	Info models.Parameters
 }
 
-//manca un setup
+// manca un setup
 func (ru *Ru864) Setup() {
 	ru.Info.Code = Code_Ru864
 	ru.Info.MinFrequency = 864000000

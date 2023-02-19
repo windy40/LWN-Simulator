@@ -19,7 +19,7 @@ const (
 	Exit
 )
 
-//TypeC mode
+// TypeC mode
 type TypeC struct {
 	Info      *models.InformationDevice
 	Supported bool `json:"supported"`

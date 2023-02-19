@@ -15,12 +15,20 @@ import (
 	socketio "github.com/googollee/go-socket.io"
 )
 
-//SimulatorRepository è il repository del simulatore
+// SimulatorRepository è il repository del simulatore
 type SimulatorRepository interface {
 	Run() bool
 	Stop() bool
 	GetIstance()
 	AddWebSocket(*socketio.Conn)
+	// windy40 dev sockets
+	DevExecuteLinkDev(*socketio.Conn, int)
+	DevExecuteUnlinkDev(*socketio.Conn, int)
+	DeleteDevSocket(string)
+	DevExecuteJoinRequest(int)
+	DevExecuteSendUplink(int, e.DevExecuteSendUplink)
+	DevExecuteRecvDownlink(int, e.DevExecuteRecvDownlink)
+	// windy40
 	SaveBridgeAddress(models.AddressIP) error
 	GetBridgeAddress() models.AddressIP
 	GetGateways() []gw.Gateway
@@ -43,7 +51,7 @@ type simulatorRepository struct {
 	sim *simulator.Simulator
 }
 
-//NewSimulatorRepository return repository del simulatore
+// NewSimulatorRepository return repository del simulatore
 func NewSimulatorRepository() SimulatorRepository {
 	return &simulatorRepository{}
 }
@@ -55,6 +63,34 @@ func (s *simulatorRepository) GetIstance() {
 func (s *simulatorRepository) AddWebSocket(socket *socketio.Conn) {
 	s.sim.AddWebSocket(socket)
 }
+
+// windy40 dev sockets
+
+func (s *simulatorRepository) DevExecuteLinkDev(socket *socketio.Conn, Id int) {
+	s.sim.DevExecuteLinkDev(socket, Id)
+}
+
+func (s *simulatorRepository) DevExecuteUnlinkDev(socket *socketio.Conn, Id int) {
+	s.sim.DevExecuteUnlinkDev(socket, Id)
+}
+
+func (s *simulatorRepository) DeleteDevSocket(SId string) {
+	s.sim.DeleteDevSocket(SId)
+}
+
+func (s *simulatorRepository) DevExecuteJoinRequest(Id int) {
+	s.sim.DevExecuteJoinRequest(Id)
+}
+
+func (s *simulatorRepository) DevExecuteSendUplink(Id int, data e.DevExecuteSendUplink) {
+	s.sim.DevExecuteSendUplink(Id, data)
+}
+
+func (s *simulatorRepository) DevExecuteRecvDownlink(Id int, data e.DevExecuteRecvDownlink) {
+	s.sim.DevExecuteRecvDownlink(Id, data)
+}
+
+// windy40
 
 func (s *simulatorRepository) Run() bool {
 
@@ -85,6 +121,11 @@ func (s *simulatorRepository) Stop() bool {
 		return true
 	}
 
+}
+
+func (s *simulatorRepository) ComponentsLoaded() bool {
+
+	return s.sim.State != util.Stopped
 }
 
 func (s *simulatorRepository) SaveBridgeAddress(addr models.AddressIP) error {

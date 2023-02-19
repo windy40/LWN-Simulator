@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	cnt "github.com/arslab/lwnsimulator/controllers"
 	"github.com/arslab/lwnsimulator/models"
@@ -21,7 +22,7 @@ import (
 	"github.com/rakyll/statik/fs"
 )
 
-//WebServer type
+// WebServer type
 type WebServer struct {
 	Address      string
 	Port         int
@@ -211,11 +212,17 @@ func newServerSocket() *socketio.Server {
 	serverSocket := socketio.NewServer(nil)
 
 	serverSocket.OnConnect("/", func(s socketio.Conn) error {
+		// windy40 dev socket : distinguish connection from web interface and from device
+		remote_hdr := s.RemoteHeader()
+		v, ok := remote_hdr["User-Agent"]
 
-		log.Println("[WS]: Socket connected")
+		if ok && strings.Contains(v[0], "Mozilla") {
 
-		s.SetContext("")
-		simulatorController.AddWebSocket(&s)
+			log.Println("[WS]: Socket connected\n")
+
+			s.SetContext("")
+			simulatorController.AddWebSocket(&s)
+		}
 
 		return nil
 
@@ -262,6 +269,8 @@ func newServerSocket() *socketio.Server {
 	serverSocket.OnEvent("/", socket.EventChangeLocation, func(s socketio.Conn, info socket.NewLocation) bool {
 		return simulatorController.ChangeLocation(info)
 	})
+
+	setupDevEventHandler(serverSocket)
 
 	return serverSocket
 }

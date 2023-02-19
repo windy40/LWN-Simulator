@@ -15,7 +15,7 @@ type Cn470 struct {
 	Info models.Parameters
 }
 
-//manca un setup
+// manca un setup
 func (cn *Cn470) Setup() {
 	cn.Info.Code = Code_Cn470
 	cn.Info.MinFrequency = 470000000

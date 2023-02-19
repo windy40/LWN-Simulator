@@ -9,8 +9,11 @@ import (
 	"github.com/arslab/lwnsimulator/simulator/components/device/features/adr"
 	dl "github.com/arslab/lwnsimulator/simulator/components/device/frames/downlink"
 	rp "github.com/arslab/lwnsimulator/simulator/components/device/regional_parameters"
-	"github.com/arslab/lwnsimulator/simulator/util"
 	"github.com/brocaar/lorawan"
+
+	// windy40
+	"github.com/arslab/lwnsimulator/simulator/util"
+	"github.com/arslab/lwnsimulator/socket"
 )
 
 func (d *Device) Execute() {
@@ -34,6 +37,11 @@ func (d *Device) Execute() {
 
 	d.Print("Open RXs", nil, util.PrintBoth)
 	phy := d.Class.ReceiveWindows(0, 0)
+
+	// windy40 LoRa event TX_
+	if d.Info.Status.LinkedDev && d.Info.Status.LastMType == lorawan.UnconfirmedDataUp {
+		d.Resources.LinkedDevSocket[d.Id].Emit(socket.DevEventLoRa, socket.DevLoRaEvent{Event: socket.TX_PACKET_EVENT})
+	}
 
 	if phy != nil {
 
@@ -85,6 +93,18 @@ func (d *Device) Execute() {
 
 			d.UnJoined()
 
+			// windy40
+			if d.Info.Status.LinkedDev {
+				d.ReturnLoraEvent(socket.TX_FAILED_EVENT)
+			}
+
+		}
+		//windy40 Lora event
+		if d.Info.Status.Mode == util.Normal {
+			if d.Info.Status.LinkedDev {
+				d.ReturnLoraEvent(socket.TX_PACKET_EVENT)
+			}
+
 		}
 
 		if d.Info.Status.Mode == util.Retransmission {
@@ -98,6 +118,11 @@ func (d *Device) Execute() {
 		err := d.Class.RetransmissionUnCData(downlink)
 		if err != nil {
 			d.Print("", err, util.PrintBoth)
+
+			// windy40
+			if d.Info.Status.LinkedDev {
+				d.ReturnLoraEvent(socket.TX_FAILED_EVENT)
+			}
 		}
 	}
 
@@ -375,7 +400,7 @@ func (d *Device) SwitchClass(class int) {
 
 }
 
-//se il dispositivo non supporta OTAA non può essere unjoined
+// se il dispositivo non supporta OTAA non può essere unjoined
 func (d *Device) UnJoined() bool {
 
 	if d.Info.Configuration.SupportedOtaa {

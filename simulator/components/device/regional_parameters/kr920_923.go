@@ -15,7 +15,7 @@ type Kr920 struct {
 	Info models.Parameters
 }
 
-//manca un setup
+// manca un setup
 func (kr *Kr920) Setup() {
 	kr.Info.Code = Code_Kr920
 	kr.Info.MinFrequency = 920900000
