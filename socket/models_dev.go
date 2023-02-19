@@ -67,11 +67,14 @@ type DevResponseCmd struct {
 	Error int    `json:"error"`
 }
 
-type DevResponseRecvDownlink struct {
+type DevResponseRecvDownlinkCmd struct {
 	Cmd     string `json:"cmd"`
 	Error   int    `json:"error"`
 	MType   string `json:"mtype"`
 	Payload string `json:"payload"`
+}
+
+type DevNoResponseCmd struct {
 }
 
 type DevLoRaEvent struct {

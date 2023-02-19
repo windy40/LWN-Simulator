@@ -17,7 +17,7 @@ import (
 	"github.com/arslab/lwnsimulator/simulator/util"
 	"github.com/arslab/lwnsimulator/socket"
 	"github.com/brocaar/lorawan"
-	socketio "github.com/googollee/go-socket.io"
+	socketio "github.com/zishang520/socket.io/socket"
 )
 
 func GetIstance() *Simulator {
@@ -31,7 +31,7 @@ func GetIstance() *Simulator {
 	s.ActiveDevices = make(map[int]int)
 	s.ActiveGateways = make(map[int]int)
 	// windy40 dev socket
-	s.Resources.LinkedDevSocket = make(map[int]socketio.Conn)
+	s.Resources.LinkedDevSocket = make(map[int](*socketio.Socket))
 	s.Resources.ConnDevSocket = make(map[string]int)
 
 	s.Forwarder = *f.Setup()
@@ -39,7 +39,7 @@ func GetIstance() *Simulator {
 	return &s
 }
 
-func (s *Simulator) AddWebSocket(WebSocket *socketio.Conn) {
+func (s *Simulator) AddWebSocket(WebSocket *socketio.Socket) {
 	s.Resources.AddWebSocket(WebSocket)
 }
 

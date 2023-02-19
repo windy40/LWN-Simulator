@@ -12,10 +12,11 @@ import (
 )
 
 type Status struct {
-	Active    bool `json:"active"`
-	LinkedDev bool `json:"linked"`
-	Joined    bool `json:"-"`
-	Mode      int  `json:"-"`
+	Active      bool `json:"active"`
+	LinkableDev bool `json:"linkable"`
+	LinkedDev   bool `json:"-"`
+	Joined      bool `json:"-"`
+	Mode        int  `json:"-"`
 
 	DataUplink    up.InfoUplink   `json:"infoUplink"`
 	MType         lorawan.MType   `json:"mtype"`   // from UI

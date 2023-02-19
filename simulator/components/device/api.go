@@ -19,6 +19,7 @@ func (d *Device) Setup(Resources *res.Resources, forwarder *f.Forwarder) {
 	d.Exit = make(chan struct{})
 	//windy40 dev socket
 	d.UplinkWaiting = make(chan struct{})
+	d.OtaaActivate = make(chan struct{})
 
 	d.Info.JoinEUI = lorawan.EUI64{0, 0, 0, 0, 0, 0, 0, 0}
 	d.Info.NetID = lorawan.NetID{0, 0, 0}
@@ -74,6 +75,7 @@ func (d *Device) TurnOFF() {
 	d.Mutex.Lock()
 	d.State = util.Stopped
 	d.Mutex.Unlock()
+	//	d.Print("Turn OFF", nil, util.PrintBoth)
 
 	d.Exit <- struct{}{}
 
@@ -84,10 +86,11 @@ func (d *Device) TurnON() {
 	d.State = util.Running
 	d.Print("Turn ON", nil, util.PrintBoth)
 	// windy40 dev socket
-	if d.Info.Status.LinkedDev != true {
+	if !d.Info.Status.LinkableDev {
 		go d.Run()
+	} else {
+		go d.RunLinkableDev()
 	}
-
 }
 
 func (d *Device) IsOn() bool {

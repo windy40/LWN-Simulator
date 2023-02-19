@@ -1,6 +1,8 @@
 package device
 
 import (
+	"fmt"
+
 	"github.com/arslab/lwnsimulator/simulator/util"
 
 	act "github.com/arslab/lwnsimulator/simulator/components/device/activation"
@@ -39,6 +41,7 @@ func (d *Device) ProcessDownlink(phy lorawan.PHYPayload) (*dl.InformationDownlin
 
 		if d.Info.Status.LinkedDev {
 			d.Info.Status.BufferDataDownlinks = append(d.Info.Status.BufferDataDownlinks, *payload)
+			d.Print(fmt.Sprintf("RX_PACKETT_EVENT UnconfirmedDataDown payload %s", string(payload.DataPayload)), nil, util.PrintOnlyConsole)
 			d.ReturnLoraEvent(socket.RX_PACKET_EVENT)
 		}
 
@@ -54,6 +57,7 @@ func (d *Device) ProcessDownlink(phy lorawan.PHYPayload) (*dl.InformationDownlin
 
 		if d.Info.Status.LinkedDev {
 			d.Info.Status.BufferDataDownlinks = append(d.Info.Status.BufferDataDownlinks, *payload)
+			d.Print(fmt.Sprintf("RX_PACKETT_EVENT Confirmed DataDown payload %s", string(payload.DataPayload)), nil, util.PrintOnlyConsole)
 			d.ReturnLoraEvent(socket.RX_PACKET_EVENT)
 		}
 

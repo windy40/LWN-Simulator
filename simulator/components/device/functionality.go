@@ -27,6 +27,11 @@ func (d *Device) Execute() {
 	d.SwitchChannel()
 
 	uplinks := d.CreateUplink()
+	// windy40 warn if more than one packet in uplinks
+	if len(uplinks) > 1 {
+		d.Print("WARNING more than 1 packet in uplinks", nil, util.PrintBoth)
+	}
+	d.Print("", err, util.PrintBoth)
 	for i := 0; i < len(uplinks); i++ {
 
 		data := d.SetInfo(uplinks[i], false)
@@ -40,7 +45,7 @@ func (d *Device) Execute() {
 
 	// windy40 LoRa event TX_
 	if d.Info.Status.LinkedDev && d.Info.Status.LastMType == lorawan.UnconfirmedDataUp {
-		d.Resources.LinkedDevSocket[d.Id].Emit(socket.DevEventLoRa, socket.DevLoRaEvent{Event: socket.TX_PACKET_EVENT})
+		d.ReturnLoraEvent(socket.TX_PACKET_EVENT)
 	}
 
 	if phy != nil {

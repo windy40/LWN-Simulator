@@ -12,22 +12,26 @@ import (
 	dev "github.com/arslab/lwnsimulator/simulator/components/device"
 	gw "github.com/arslab/lwnsimulator/simulator/components/gateway"
 	"github.com/arslab/lwnsimulator/simulator/util"
-	socketio "github.com/googollee/go-socket.io"
+	socketio "github.com/zishang520/socket.io/socket"
 )
 
 // SimulatorRepository è il repository del simulatore
 type SimulatorRepository interface {
 	Run() bool
 	Stop() bool
+	IsRunning() bool
 	GetIstance()
-	AddWebSocket(*socketio.Conn)
+	AddWebSocket(*socketio.Socket)
 	// windy40 dev sockets
-	DevExecuteLinkDev(*socketio.Conn, int)
-	DevExecuteUnlinkDev(*socketio.Conn, int)
-	DeleteDevSocket(string)
-	DevExecuteJoinRequest(int)
-	DevExecuteSendUplink(int, e.DevExecuteSendUplink)
-	DevExecuteRecvDownlink(int, e.DevExecuteRecvDownlink)
+	DevDeleteSocket(string)
+	DevTidyAfterDisconnect()
+	DevUnjoin(string)
+
+	DevExecuteLinkDev(*socketio.Socket, int) (int, error)
+	DevExecuteUnlinkDev(*socketio.Socket, int) (int, error)
+	DevExecuteJoinRequest(int) (int, error)
+	DevExecuteSendUplink(int, string, string) (int, error)
+	DevExecuteRecvDownlink(int, int) (int, string, string, error)
 	// windy40
 	SaveBridgeAddress(models.AddressIP) error
 	GetBridgeAddress() models.AddressIP
@@ -60,34 +64,42 @@ func (s *simulatorRepository) GetIstance() {
 	s.sim = simulator.GetIstance()
 }
 
-func (s *simulatorRepository) AddWebSocket(socket *socketio.Conn) {
+func (s *simulatorRepository) AddWebSocket(socket *socketio.Socket) {
 	s.sim.AddWebSocket(socket)
 }
 
 // windy40 dev sockets
-
-func (s *simulatorRepository) DevExecuteLinkDev(socket *socketio.Conn, Id int) {
-	s.sim.DevExecuteLinkDev(socket, Id)
+func (s *simulatorRepository) DevDeleteSocket(SId string) {
+	s.sim.DevDeleteSocket(SId)
 }
 
-func (s *simulatorRepository) DevExecuteUnlinkDev(socket *socketio.Conn, Id int) {
-	s.sim.DevExecuteUnlinkDev(socket, Id)
+func (s *simulatorRepository) DevUnjoin(SId string) {
+	s.sim.DevUnjoin(SId)
 }
 
-func (s *simulatorRepository) DeleteDevSocket(SId string) {
-	s.sim.DeleteDevSocket(SId)
+func (s *simulatorRepository) DevTidyAfterDisconnect() {
+	s.Stop()
+	s.Run()
 }
 
-func (s *simulatorRepository) DevExecuteJoinRequest(Id int) {
-	s.sim.DevExecuteJoinRequest(Id)
+func (s *simulatorRepository) DevExecuteLinkDev(socket *socketio.Socket, Id int) (int, error) {
+	return s.sim.DevExecuteLinkDev(socket, Id)
 }
 
-func (s *simulatorRepository) DevExecuteSendUplink(Id int, data e.DevExecuteSendUplink) {
-	s.sim.DevExecuteSendUplink(Id, data)
+func (s *simulatorRepository) DevExecuteUnlinkDev(socket *socketio.Socket, Id int) (int, error) {
+	return s.sim.DevExecuteUnlinkDev(socket, Id)
 }
 
-func (s *simulatorRepository) DevExecuteRecvDownlink(Id int, data e.DevExecuteRecvDownlink) {
-	s.sim.DevExecuteRecvDownlink(Id, data)
+func (s *simulatorRepository) DevExecuteJoinRequest(Id int) (int, error) {
+	return s.sim.DevExecuteJoinRequest(Id)
+}
+
+func (s *simulatorRepository) DevExecuteSendUplink(Id int, mt string, pl string) (int, error) {
+	return s.sim.DevExecuteSendUplink(Id, mt, pl)
+}
+
+func (s *simulatorRepository) DevExecuteRecvDownlink(Id int, bs int) (int, string, string, error) {
+	return s.sim.DevExecuteRecvDownlink(Id, bs)
 }
 
 // windy40
@@ -118,6 +130,19 @@ func (s *simulatorRepository) Stop() bool {
 
 	default: //running
 		s.sim.Stop()
+		return true
+	}
+
+}
+
+func (s *simulatorRepository) IsRunning() bool {
+
+	switch s.sim.State {
+
+	case util.Stopped:
+		return false
+
+	default: //running
 		return true
 	}
 

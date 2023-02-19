@@ -10,7 +10,7 @@ const (
 	DevEventSendUplink   = "send-uplink"
 	DevEventRecvDownlink = "recv-downlink"
 
-	DevEventExecuteCmd  = "execute-cmd"
+	// DevEventExecuteCmd  = "execute-cmd"
 	DevEventResponseCmd = "response-cmd"
 
 	DevEventAckCmd = "ack-cmd"

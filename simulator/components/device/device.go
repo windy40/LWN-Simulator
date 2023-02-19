@@ -19,6 +19,7 @@ type Device struct {
 	Exit  chan struct{} `json:"-"`
 	// windy40 dev socket
 	UplinkWaiting chan struct{}            `json:"-"`
+	OtaaActivate  chan struct{}            `json:"-"`
 	Id            int                      `json:"id"`
 	Info          models.InformationDevice `json:"info"`
 	Class         classes.Class            `json:"-"`
@@ -28,17 +29,14 @@ type Device struct {
 
 // *******************Intern func*******************/
 func (d *Device) Run() {
-
 	defer d.Resources.ExitGroup.Done()
 
 	d.OtaaActivation()
-
 	ticker := time.NewTicker(d.Info.Configuration.SendInterval)
 
 	for {
 
 		select {
-
 		case <-ticker.C:
 			break
 
@@ -64,7 +62,6 @@ func (d *Device) Run() {
 			}
 
 		}
-
 	}
 
 }
@@ -101,7 +98,7 @@ func (d *Device) Print(content string, err error, printType int) {
 	mode := d.modeToString()
 
 	name := d.Info.Name
-	if d.Info.Status.LinkedDev {
+	if d.Info.Status.LinkableDev {
 		name = fmt.Sprintf("*%s", name)
 	}
 	if err == nil {

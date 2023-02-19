@@ -20,8 +20,8 @@ const (
 
 func (d *Device) OtaaActivation() {
 
-	for !d.Info.Status.Joined {
-
+	//	for !d.Info.Status.Joined {
+	if !d.Info.Status.Joined {
 		d.Info.Status.Mode = util.Activation
 
 		if !d.CanExecute() { //stop simulator
@@ -81,7 +81,8 @@ func (d *Device) CreateJoinRequest() []byte {
 			Major: lorawan.LoRaWANR1,
 		},
 		MACPayload: &lorawan.JoinRequestPayload{
-			JoinEUI:  d.Info.JoinEUI, // appEUI
+			//			JoinEUI:  d.Info.JoinEUI, // appEUI
+			JoinEUI:  d.Info.DevEUI, // appEUI
 			DevEUI:   d.Info.DevEUI,
 			DevNonce: d.Info.DevNonce,
 		},
