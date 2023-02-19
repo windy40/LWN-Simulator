@@ -15,7 +15,7 @@ type Eu433 struct {
 	Info models.Parameters
 }
 
-//manca un setup
+// manca un setup
 func (eu *Eu433) Setup() {
 	eu.Info.Code = Code_Eu433
 	eu.Info.MinFrequency = 433050000

@@ -15,7 +15,7 @@ type Eu868 struct {
 	Info models.Parameters
 }
 
-//manca un setup
+// manca un setup
 func (eu *Eu868) Setup() {
 	eu.Info.Code = Code_Eu868
 	eu.Info.MinFrequency = 863000000

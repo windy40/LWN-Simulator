@@ -23,7 +23,7 @@ const (
 	TimeoutClassB = 120
 )
 
-//TypeB è implementata come la classe A
+// TypeB è implementata come la classe A
 type TypeB struct {
 	Info *models.InformationDevice
 }

@@ -15,7 +15,7 @@ type In865 struct {
 	Info models.Parameters
 }
 
-//manca un setup
+// manca un setup
 func (in *In865) Setup() {
 	in.Info.Code = Code_In865
 	in.Info.MinFrequency = 865000000

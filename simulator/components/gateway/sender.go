@@ -14,6 +14,13 @@ import (
 func (g *Gateway) SenderVirtual() {
 
 	defer g.Print("Sender Turn OFF", nil, util.PrintOnlyConsole)
+	// first send a pull data to connect to bridge ??
+	err := g.sendPullData()
+	if err != nil {
+		g.Print("", err, util.PrintBoth)
+	} else {
+		g.Print("GW connect PULL DATA send", nil, util.PrintBoth)
+	}
 
 	go g.KeepAlive()
 
@@ -88,7 +95,21 @@ func (g *Gateway) sendPullData() error {
 	}
 
 	pulldata, _ := pkt.CreatePacket(pkt.TypePullData, g.Info.MACAddress, pkt.Stat{}, nil, 0)
+	/* 	stat := pkt.Stat{
+	   		Time: pkt.GetTime(),
+	   		Lati: g.Info.Location.Latitude,
+	   		Long: g.Info.Location.Longitude,
+	   		Alti: g.Info.Location.Altitude,
+	   		RXNb: g.Stat.RXNb,
+	   		RXOK: g.Stat.RXOK,
+	   		RXFW: g.Stat.RXFW,
+	   		ACKR: g.Stat.ACKR,
+	   		DWNb: g.Stat.DWNb,
+	   		TXNb: g.Stat.TXNb,
+	   	}
 
+	   	pulldata, _ := pkt.CreatePacket(pkt.TypePullData, g.Info.MACAddress, stat, nil, 0)
+	*/
 	_, err := udp.SendDataUDP(g.Info.Connection, pulldata)
 
 	return err
@@ -127,12 +148,28 @@ func (g *Gateway) KeepAlive() {
 
 		} else {
 
-			err := g.sendPullData()
+			/* 			err := g.sendPullData()
+			   			if err != nil {
+			   				g.Print("", err, util.PrintBoth)
+			   			} else {
+			   				g.Print("PULL DATA send", nil, util.PrintBoth)
+			   			} */
+			//
+			packet, err := g.createPacket(pkt.RXPK{})
 			if err != nil {
-				g.Print("", err, util.PrintBoth)
-			} else {
-				g.Print("PULL DATA send", nil, util.PrintBoth)
+				g.Print("Error in creating GW Stat packet", err, util.PrintBoth)
 			}
+
+			_, err = udp.SendDataUDP(g.Info.Connection, packet)
+			if err != nil {
+
+				msg := fmt.Sprintf("Unable to send GW Stat data to %v, it may be off", *g.Info.BridgeAddress)
+				g.Print("", errors.New(msg), util.PrintBoth)
+
+			} else {
+				g.Print("PUSH GW Stat DATA send", nil, util.PrintBoth)
+			}
+			//
 
 		}
 

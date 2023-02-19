@@ -8,8 +8,6 @@ import (
 	"log"
 	"strings"
 
-	"github.com/brocaar/lorawan"
-
 	"github.com/arslab/lwnsimulator/codes"
 	"github.com/arslab/lwnsimulator/models"
 	dev "github.com/arslab/lwnsimulator/simulator/components/device"
@@ -18,7 +16,8 @@ import (
 	gw "github.com/arslab/lwnsimulator/simulator/components/gateway"
 	"github.com/arslab/lwnsimulator/simulator/util"
 	"github.com/arslab/lwnsimulator/socket"
-	socketio "github.com/googollee/go-socket.io"
+	"github.com/brocaar/lorawan"
+	socketio "github.com/zishang520/socket.io/socket"
 )
 
 func GetIstance() *Simulator {
@@ -31,13 +30,16 @@ func GetIstance() *Simulator {
 
 	s.ActiveDevices = make(map[int]int)
 	s.ActiveGateways = make(map[int]int)
+	// windy40 dev socket
+	s.Resources.LinkedDevSocket = make(map[int](*socketio.Socket))
+	s.Resources.ConnDevSocket = make(map[string]int)
 
 	s.Forwarder = *f.Setup()
 
 	return &s
 }
 
-func (s *Simulator) AddWebSocket(WebSocket *socketio.Conn) {
+func (s *Simulator) AddWebSocket(WebSocket *socketio.Socket) {
 	s.Resources.AddWebSocket(WebSocket)
 }
 
