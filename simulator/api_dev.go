@@ -31,6 +31,9 @@ import (
 func (s *Simulator) DevExecuteLinkDev(DevSocket *socketio.Socket, Id int) (int, error) {
 	d := s.Devices[Id]
 
+	if d.Info.Status.LinkedDev {
+		return codes.DevErrorDeviceLinked, errors.New("device already linked")
+	}
 	s.Resources.DevAddSocket(DevSocket, Id)
 	d.Info.Status.LinkedDev = true
 	d.Print("Linked to external MCU", nil, util.PrintBoth)
@@ -52,7 +55,7 @@ func (s *Simulator) DevExecuteUnlinkDev(DevSocket *socketio.Socket, Id int) (int
 	} */
 
 	d.Info.Status.LinkedDev = false
-	d.Print("Linked from external MCU", nil, util.PrintBoth)
+	d.Print("Unlinked from external MCU", nil, util.PrintBoth)
 
 	return codes.DevCmdOK, nil
 }

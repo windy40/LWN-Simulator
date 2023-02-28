@@ -56,7 +56,7 @@ func (d *Device) DevJoinAndProcessUplink() {
 	} */
 }
 
-func (d *Device) RunLinkableDev() {
+func (d *Device) RunRemoteDev() {
 	defer d.Resources.ExitGroup.Done()
 
 	for {

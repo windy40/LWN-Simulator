@@ -121,17 +121,17 @@ func log_cmd_error(cmd string, devEUI string, status int) {
 	case codes.DevCmdTimeout:
 		error_str = ""
 	case codes.DevErrorNoDeviceWithDevEUI:
-		error_str = "no device with devEUI"
+		error_str = "no device with devEUI found"
 	case codes.DevErrorNIY:
 		error_str = "not implemented yet"
 	case codes.DevErrorDeviceNotLinked:
-		error_str = "device not linked"
-	case codes.DevErrorDeviceTurnedOFF:
-		error_str = "device turned off"
+		error_str = "device status unlinked"
+	case codes.DevErrorDeviceLinked:
+		error_str = "device status linked"
 	case codes.DevErrorDeviceNotJoined:
-		error_str = "device not joined"
+		error_str = "device status not joined"
 	case codes.DevErrorDeviceAlreadyJoined:
-		error_str = "device already joined (rejoining not implemented)"
+		error_str = "device status already joined (rejoining not implemented)"
 	case codes.DevErrorRecvBufferEmpty:
 		error_str = "downlink receive buffer empty"
 	case codes.DevErrorSimulatorNotRunning:

@@ -86,10 +86,10 @@ func (d *Device) TurnON() {
 	d.State = util.Running
 	d.Print("Turn ON", nil, util.PrintBoth)
 	// windy40 dev socket
-	if !d.Info.Status.LinkableDev {
+	if !d.Info.Status.RemoteDev {
 		go d.Run()
 	} else {
-		go d.RunLinkableDev()
+		go d.RunRemoteDev()
 	}
 }
 

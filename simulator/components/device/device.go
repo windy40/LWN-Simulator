@@ -98,7 +98,7 @@ func (d *Device) Print(content string, err error, printType int) {
 	mode := d.modeToString()
 
 	name := d.Info.Name
-	if d.Info.Status.LinkableDev {
+	if d.Info.Status.RemoteDev {
 		name = fmt.Sprintf("*%s", name)
 	}
 	if err == nil {
